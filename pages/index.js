@@ -69,30 +69,39 @@ class Layer {
       this.text = ''
     }
   }
+
   get isRect() {
     return this.type === 0
   }
+
   get isCircle() {
     return this.type === 1
   }
+
   get isImage() {
     return this.type === 2
   }
+
   get isText() {
     return this.type === 3
   }
+
   get width() {
     return this.isText ? 0 : this.size.width
   }
+
   set width(val) {
     this.size.width = val
   }
+
   get height() {
     return this.isText ? 0 : this.size.height
   }
+
   set height(val) {
     this.size.height = val
   }
+
   get icon() {
     if (this.isCircle) {
       return this.border.width > 0 ? 'circle-outline' : 'circle'
@@ -105,6 +114,7 @@ class Layer {
     }
     return this.border.width > 0 ? 'square-outline' : 'square'
   }
+
   get style() {
     if (this.isImage) {
       return {}
@@ -118,17 +128,20 @@ class Layer {
     if (this.border.width > 0) {
       return {
         color: Color2CSS(this.border.color),
-        backgroundColor: Color2CSS(this.color)
+        backgroundColor: Color2CSS(this.color),
       }
     }
     return { color: Color2CSS(this.color) }
   }
+
   static get TypeNames() {
     return ['矩形', '円・楕円', '画像', 'テキスト']
   }
+
   get typeName() {
     return Layer.TypeNames[this.type]
   }
+
   get typeIcon() {
     if (this.isCircle) {
       return 'circle'
@@ -141,6 +154,7 @@ class Layer {
     }
     return 'square'
   }
+
   render(context) {
     context.lineWidth = this.border.width
     context.strokeStyle = Color2CSS(this.border.color)
@@ -152,7 +166,7 @@ class Layer {
       context.shadowOffsetY = this.shadow.y
     }
     switch (this.type) {
-      case 1:
+      case 1: {
         const radius = (this.width - this.border.width) / 2
         const radiusY = (this.height - this.border.width) / 2
         const centerX = this.x + radius + this.border.width / 2
@@ -165,12 +179,14 @@ class Layer {
           context.stroke()
         }
         break
-      case 2:
+      }
+      case 2: {
         if (this.image.src) {
           context.drawImage(this.image, this.x, this.y, this.width, this.height)
         }
         break
-      case 3:
+      }
+      case 3: {
         if (this.text) {
           if (this.font) {
             let font = ''
@@ -195,7 +211,8 @@ class Layer {
           }
         }
         break
-      default:
+      }
+      default: {
         context.fillRect(this.x, this.y, this.width, this.height)
         if (this.border.width > 0) {
           context.strokeRect(
@@ -205,6 +222,7 @@ class Layer {
             this.height - this.border.width
           )
         }
+      }
     }
   }
 }
@@ -214,7 +232,7 @@ export default {
     Sketch,
     Dragable,
     Font,
-    Size
+    Size,
   },
   data() {
     return {
@@ -227,7 +245,7 @@ export default {
       blobUrl: null,
       uploadedFile: null,
       linkElements: [],
-      updateTimer: null
+      updateTimer: null,
     }
   },
   computed: {
@@ -239,7 +257,7 @@ export default {
         return this.layers[this.indexLayers]
       }
       return null
-    }
+    },
   },
   watch: {
     canvasWidth(newVal) {
@@ -250,18 +268,18 @@ export default {
     },
     layers: {
       deep: true,
-      handler: function(to, from) {
+      handler(to, from) {
         this.updateCanvas()
-      }
+      },
     },
     uploadedFile(to, from) {
       const reader = new FileReader()
-      reader.onload = e => {
+      reader.onload = (e) => {
         this.currentLayer.image.src = this.currentLayer.imageSrc =
           e.target.result
       }
       reader.readAsDataURL(to)
-    }
+    },
   },
   mounted() {
     this.updateCanvas()
@@ -381,15 +399,15 @@ export default {
       this.updateTimer = setTimeout(() => {
         // 使用するWebフォントを列挙する
         const usingFonts = []
-        this.layers.forEach(layer => {
+        this.layers.forEach((layer) => {
           if (layer.isText && layer.font && layer.font.face.href) {
             usingFonts.push(layer.font.face.href)
           }
         })
         // 使うものを残し、使わないものを削除する
         const newLinkElements = []
-        this.linkElements.forEach(e => {
-          const isFound = usingFonts.find(href => {
+        this.linkElements.forEach((e) => {
+          const isFound = usingFonts.find((href) => {
             return href === e.href
           })
           if (isFound) {
@@ -400,8 +418,8 @@ export default {
           }
         })
         // 追加されたものをロードする
-        usingFonts.forEach(href => {
-          const isFound = newLinkElements.find(e => {
+        usingFonts.forEach((href) => {
+          const isFound = newLinkElements.find((e) => {
             return e.href === href
           })
           if (!isFound) {
@@ -418,7 +436,7 @@ export default {
         const cv = document.getElementById('canvas')
         const ctx = cv.getContext('2d')
         ctx.clearRect(0, 0, cv.width, cv.height)
-        this.layers.forEach(layer => {
+        this.layers.forEach((layer) => {
           ctx.save()
           layer.render(ctx)
           ctx.restore()
@@ -429,8 +447,8 @@ export default {
     },
     Base64toBlob(base64) {
       const b64 = atob(base64.split(',')[1])
-      const u8 = Uint8Array.from(b64.split(''), e => e.charCodeAt())
+      const u8 = Uint8Array.from(b64.split(''), (e) => e.charCodeAt())
       return new Blob([u8], { type: 'image/png' })
-    }
-  }
+    },
+  },
 }

@@ -1,25 +1,18 @@
 <template lang="pug">
   div
-    section.hero.is-info.is-bold
-      .hero-body
-        .container.has-text-centered
-          h1.title Canvas Editor
+    app-navigation
     nuxt
-    footer.footer
-      .content.has-text-centered
-        p &copy; {{ getYear() }} amiiby.com
+    app-footer
 </template>
 
 <script>
+import AppNavigation from '~/components/AppNavigation.vue'
+import AppFooter from '~/components/Footer.vue'
 export default {
-  methods: {
-    getYear() {
-      let year = new Date().getFullYear()
-      if (year > 2019) {
-        year = '2019 - ' + year
-      }
-      return year
-    }
-  }
+  components: {
+    AppNavigation,
+    AppFooter,
+  },
+  methods: {},
 }
 </script>

@@ -1,6 +1,459 @@
 $gap: 32px;
-
 @import '~bulma/sass/utilities/_all';
-
 @import '~bulma';
 @import '~buefy/src/scss/buefy';
+//
+// Variables
+//
+// width
+// -------------------------
+// Number
+$base_number_view: 1600;
+$base_number: 1240;
+// $base_number_tb: 1024;
+$base_number_sp: 375;
+// Base
+$base_width_view: $base_number_view+px;
+$base_width: $base_number+px;
+// $base_width_tb: $base_number_tb + px;
+// $base_width_sp: $base_number_sp + px;
+// Media Queries
+$point_view: $base_width_view;
+$point_pc: $base_width;
+// $point_tb: $base_width_tb;
+$point_sp: 767px;
+$point_min: 374px;
+$body_max_width: 720px;
+// font
+// -------------------------
+$font_base: 'Noto Sans JP',
+'Lucida Grande',
+'游ゴシック',
+'Yu Gothic',
+YuGothic,
+'Hiragino Kaku Gothic W3',
+'Hiragino Sans',
+'ヒラギノ角ゴ Pro W3',
+Meiryo,
+メイリオ,
+system-ui,
+sans-serif;
+$color_main: #222;
+$color_second: #231815;
+$color_third: #99D2CB;
+$color_accent: #ff873f;
+$link_color: #1C3B75;
+$link_color_hover: #E94D99;
+$ground_color: #FCDB00;
+$tag_color: #aaa;
+$text_color_main: #333;
+$text_color_sub: #fff;
+$btn_color_base: #333;
+$opacity_value: .7;
+.theme--light.v-application {
+    background-color: transparent;
+}
+
+
+/* --------------------------------------------------
+ 00: Reset Style
+ -------------------------------------------------- */
+
+*,
+ ::after,
+ ::before {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: 900;
+}
+
+h2 {
+    font-size: 1.17rem
+}
+
+h3 {
+    font-size: 1.1rem
+}
+
+h4 {
+    font-size: 1rem
+}
+
+h5 {
+    font-size: .83rem
+}
+
+h6 {
+    font-size: .67rem
+}
+
+h1 {
+    margin: .67em 0
+}
+
+pre {
+    white-space: pre-wrap
+}
+
+hr {
+    border-style: solid;
+    border-width: 1px 0 0;
+    color: inherit;
+    height: 0;
+    overflow: visible
+}
+
+audio,
+canvas,
+embed,
+iframe,
+img,
+object,
+svg,
+video {
+    display: block;
+    max-width: 100%
+}
+
+canvas,
+img,
+svg,
+video {
+    height: auto
+}
+
+audio {
+    width: 100%
+}
+
+img {
+    border-style: none
+}
+
+svg {
+    overflow: hidden
+}
+
+article,
+aside,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section {
+    display: block
+}
+
+[type=checkbox],
+[type=radio] {
+    box-sizing: border-box;
+    padding: 0
+}
+
+
+/* --------------------------------------------------
+ 01: Utility Style
+ -------------------------------------------------- */
+
+
+/* display */
+
+.display-pc {
+    @media only screen and (max-width: $point_sp) {
+        display: none;
+    }
+}
+
+.display-sp {
+    display: none;
+    @media only screen and (max-width: $point_sp) {
+        display: block;
+    }
+}
+
+
+/* position */
+
+.pos_center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.caption {
+    font-size: 0.4em;
+    color: #555;
+}
+
+//
+// Base
+//
+
+/* --------------------------------------------------
+ 02: Base Style
+ -------------------------------------------------- */
+
+img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: bottom;
+    transition: .3s;
+    margin: 0 auto;
+    // &[src*="@sp."] {
+    // 	display: none;
+    // }
+    // @media only screen and (max-width: $point_sp) {
+    // 	&[src*="@pc."] {
+    // 		display: none;
+    // 	}
+    // 	&[src*="@sp."] {
+    // 		display: inline;
+    // 	}
+    // }
+}
+
+p {
+    margin: 2em 0;
+    line-height: 1.5;
+}
+
+blockquote {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 1em 2em;
+}
+
+
+/* lazyload */
+
+.lazyload,
+.lazyloading {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.lazyloaded {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* --------------------------------------------------
+ 03: Animation
+ -------------------------------------------------- */
+
+
+/* fadeIn */
+
+@keyframes fadeIn {
+    0% {
+        visibility: hidden;
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+/* --------------------------------------------------
+ 04: Link Style
+ -------------------------------------------------- */
+
+a {
+    color: $link_color;
+    text-decoration: none;
+    font-weight: bolder;
+    transition: .3s;
+    &:hover {
+        color: $link_color_hover;
+        text-decoration: none;
+    }
+}
+
+
+/* --------------------------------------------------
+ 05: Wrapper Style
+ -------------------------------------------------- */
+
+.wrap {
+    box-sizing: content-box;
+    max-width: $base_width;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 0 4vw 16vw;
+}
+
+
+/* --------------------------------------------------
+ 06: Header Style
+ -------------------------------------------------- */
+
+
+/* nav-global */
+
+.nav-global {
+    margin: 0 0 10px;
+    ul {
+        text-align: center;
+    }
+    li {
+        display: inline-block;
+        margin: 0 1.0em;
+    }
+}
+
+
+/* nav-utility */
+
+.nav-utility {
+    margin: 0 0 5px;
+    ul {
+        text-align: right;
+    }
+    li {
+        display: inline-block;
+        margin: 0 1.0em;
+        font-size: 12px;
+    }
+}
+
+
+/* breadcrumb */
+
+.breadcrumb {
+    line-height: 1.1;
+    a {
+        color: $link_color_hover;
+        text-decoration: none;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+
+/* --------------------------------------------------
+ 07: Contents Style
+-------------------------------------------------- */
+
+main {
+    display: flex;
+    flex-direction: column;
+    scroll-snap-type: y proximity;
+}
+
+.content {
+    width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 48rem;
+    margin: 0 auto;
+    z-index: 1;
+}
+
+.side {
+    float: left;
+    width: 240px;
+}
+
+
+/* --------------------------------------------------
+ 08: Footer Style
+ -------------------------------------------------- */
+
+.footer {
+    margin: 0 auto;
+    padding: 5px 10px;
+}
+
+
+/* nav-footer */
+
+.nav-footer {
+    margin: 0 0 10px;
+    ul {
+        text-align: center;
+    }
+    li {
+        display: inline-block;
+        margin: 0 1.0em;
+    }
+}
+
+
+/* nav-footer-utility */
+
+.nav-footer-utility {
+    margin: 0 0 5px;
+    li {
+        display: inline-block;
+        margin: 0 1.0em;
+        font-size: 12px;
+    }
+}
+
+//
+// Project
+//
+
+/* --------------------------------------------------
+ Project
+ -------------------------------------------------- */
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+
+/* --------------------------------------------------
+  index
+  -------------------------------------------------- */
+
+
+/* icon__hover */
+
+$icons:( twitter: #55acee, note: #2dcdb5, facebook: #3b5998, hatena: #ffffff, instagram: #B932A6);
+@each $key,
+$value in $icons {
+    .icon__#{$key} {
+        @keyframes #{$key}anim {
+            0% {
+                fill: $color_second;
+            }
+            100% {
+                fill: $value;
+            }
+        }
+        &:hover {
+            path {
+                animation: #{$key}anim 0.4s ease-in-out forwards;
+            }
+        }
+    }
+}
+
+$parallax__layers: 6;
+@for $i from 0 through $parallax__layers {
+    $x: ($parallax__layers - $i) / 2;
+    .parallax__layer__#{$i} {
+        transform: translateZ(-100 * $x#{px}) scale($x + 1);
+    }
+}
