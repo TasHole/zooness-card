@@ -65,8 +65,27 @@ $opacity_value: .7;
     box-sizing: border-box;
 }
 
+html {
+    height: 100%;
+    margin: 0;
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 14px;
+    word-wrap: break-word;
+    background-color: $ground_color;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-feature-settings: "kern";
+    font-feature-settings: "kern";
+    -webkit-font-kerning: normal;
+    font-kerning: normal;
+}
+
 body {
     margin: 0;
+    color: $color_second;
+    background-color: $ground_color;
+    font-family: $font_base;
 }
 
 h1 {
@@ -152,6 +171,10 @@ main,
 nav,
 section {
     display: block
+}
+
+li {
+    margin-left: 2em;
 }
 
 [type=checkbox],

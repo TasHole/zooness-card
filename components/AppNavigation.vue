@@ -5,6 +5,9 @@
         <nuxt-link to="/" class="logo">
           <SVGElement name="logo" />
         </nuxt-link>
+        <h1>
+          はじめてのweb会議を少しだけスムーズに
+        </h1>
         <div class="links">
           <a
             href="https://twitter.com/tatt_san/"
@@ -40,11 +43,19 @@ export default {
   padding: 0 5%;
   width: 100%;
   background-color: #fcdb00;
-  height: 80px;
+  height: 10vh;
   z-index: 100;
   position: fixed;
   will-change: transform;
   transition: 0.8s all cubic-bezier(0.39, 0.575, 0.565, 1);
+  h1{
+    margin-left: 2em;
+    font-size: 0.6rem;
+    color:$color_second;
+    @media only screen and (max-width: $point_sp) {
+      display: none;
+    }
+  }
 }
 .header_wrap {
   display: flex;

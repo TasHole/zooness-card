@@ -1,90 +1,106 @@
 .expandable {
-  flex-grow: 1 !important;
-  flex-shrink: 1 !important;
+    flex-grow: 1 !important;
+    flex-shrink: 1 !important;
 }
+
 .is-wrap {
-  flex-wrap: wrap;
-  & > .field {
-    margin-bottom: 0.75em;
-  }
+    flex-wrap: wrap;
+    &>.field {
+        margin-bottom: 0.75em;
+    }
 }
+
 .field.is-wrap {
-  margin-bottom: 0;
+    margin-bottom: 0;
 }
+
 #canvas {
-  display: none;
+    display: none;
 }
+
 .preview {
-  line-height: 0;
-  padding: 0.5em 0;
-  background-color: white;
-  img {
-    border: 1px solid #888;
-  }
+    margin: 2em auto;
+    line-height: 0;
+    background-color: white;
+    img {
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    }
 }
+
 label {
-  &:not(.upload) {
-    align-self: center;
-    padding-right: 0.75em;
-  }
+    &:not(.upload) {
+        align-self: center;
+        padding-right: 0.75em;
+    }
 }
+
 .layer-config {
-  border: 1px solid #dbdbdb;
-  border-radius: 4px 4px;
-  background-color: #e0e0e0;
-
-  padding: 0.5em 0.75em;
-  color: #363636;
+    color: $color_main;
 }
+
 .row {
-  @extend .layer-config;
-
-  * {
-    flex-grow: 0;
-    flex-shrink: 0;
-    align-self: center;
-  }
-  span {
-    margin-right: 0.5em;
-  }
-  .symbol {
-    border: 1px solid #363636;
-  }
+    @extend .layer-config;
+    * {
+        flex-grow: 0;
+        flex-shrink: 0;
+        align-self: center;
+    }
+    span {
+        margin-right: 0.5em;
+    }
+    .symbol {
+        border: 1px solid #363636;
+    }
 }
+
 .layers {
-  cursor: grab;
+    cursor: grab;
+    .row {
+        border-top-width: 0;
+        border-radius: 0;
+        &:first-child {
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            border-top-width: 1px;
+        }
+        &:last-child {
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+    }
+}
 
-  .row {
-    border-top-width: 0;
-    border-radius: 0;
-    &:first-child {
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
-      border-top-width: 1px;
-    }
-    &:last-child {
-      border-bottom-left-radius: 4px;
-      border-bottom-right-radius: 4px;
-    }
-  }
-}
 .color-sample {
-  width: 1.5em;
-  height: 1.5em;
-  border: 1px solid #363633;
-  margin: 0;
+    width: 1.5em;
+    height: 1.5em;
+    border: 1px solid #363633;
+    margin: 0;
 }
+
 .upload {
-  .upload-draggable {
-    display: block;
-  }
+    .upload-draggable {
+        display: block;
+    }
 }
+
 input[type=number] {
-  text-align: center;
+    text-align: center;
 }
+
 .color-picker {
-  display: inline-block;
+    display: inline-block;
 }
+
 .field-sub {
-  margin-left: 1em;
+    margin-left: 1em;
+}
+
+.section {
+    margin: 0 auto;
+    max-width: 1024px;
+    padding: 10vh 2vw;
+}
+
+.column {
+    padding: 2em;
 }

@@ -18,6 +18,8 @@ export default {
 .footer {
   display: flex;
   text-align: center;
+  background-color: $ground_color;
+  height: 10vh;
   .writes {
     flex-direction: column;
     font-family: 'Quicksand', 'Source Sans Pro', -apple-system,

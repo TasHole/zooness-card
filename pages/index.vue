@@ -6,15 +6,17 @@
       )
     .columns
       .column
-        .row
-          .field.is-grouped
-            label キャンバスサイズ
-            p.control.has-icons-left
-              input.input(type="number" min="0" max="9999" v-model.number="canvasWidth")
-              b-icon.is-left(icon="arrow-expand-horizontal")
-            p.control.has-icons-left
-              input.input(type="number" min="0" max="9999" v-model.number="canvasHeight")
-              b-icon.is-left(icon="arrow-expand-vertical")
+        p
+          | そのZoom背景、名刺にしておけば良いのかも。
+          br
+          | 原案は、Findy石川さん（
+          a(href="https://twitter.com/HRBizDev1/status/1250319945629483011" target="_blank") @HRBizDev1
+          | ）のツイートから。
+        h3 メリット
+        ol
+          li 名前の読み違いが起こらない
+          li 相手の視野内に必要情報を盛り込める
+          li 名刺交換が楽（QRコードを相手に撮ってもらうだけ）
         .preview
           img(:src="canvasData")
         .columns.is-mobile
@@ -58,10 +60,6 @@
         .layer-config(v-if="currentLayer")
           .field.is-horizontal
             .field-body
-              .field
-                label 名前
-                p.control.is-expanded
-                  input.input(v-model="currentLayer.name")
               .field
                 label 種類
                 b-select(v-model="currentLayer.type" :icon="currentLayer.typeIcon")
