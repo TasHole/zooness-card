@@ -7,16 +7,16 @@
           :class="val.ratio ? 'is-success' : ''"
           :title="'縦横比固定：' + (val.ratio ? 'オン' : 'オフ')"
           @click="toggleRatio")
-          b-icon(:icon="val.ratio ? 'link-variant' : 'link-variant-off'")
+          v-icon(:icon="val.ratio ? 'link-variant' : 'link-variant-off'")
         button.button(
           title="キャンバスサイズに合わせる"
           @click="onClickExpand")
-          b-icon(icon="arrow-expand-all")
+          v-icon(icon="arrow-expand-all")
         button.button(
           v-if="val.srcWidth || val.srcHeight"
           title="実サイズに合わせる"
           @click="onClickCollapse")
-          b-icon(icon="arrow-collapse-all")
+          v-icon(icon="arrow-collapse-all")
     .field.is-horizontal
       .field-body.field-sub
         .field.is-grouped.is-narrow
@@ -28,7 +28,7 @@
                 min="0"
                 max="9999"
                 v-model.number="sizeWidth")
-              b-icon.is-left(icon="arrow-expand-horizontal")
+              v-icon.is-left(icon="arrow-expand-horizontal")
         .field.is-grouped.is-narrow
           label 高さ
           .field
@@ -38,7 +38,7 @@
                 min="0"
                 max="9999"
                 v-model.number="sizeHeight")
-              b-icon.is-left(icon="arrow-expand-vertical")
+              v-icon.is-left(icon="arrow-expand-vertical")
 </template>
 
 <script>

@@ -10,8 +10,14 @@
     }
 }
 
-.field.is-wrap {
-    margin-bottom: 0;
+.field {
+    .is-wrap {
+        margin-bottom: 0;
+    }
+}
+
+.is-horizontal {
+    flex-direction: row;
 }
 
 #canvas {
@@ -55,7 +61,9 @@ label {
 
 .layers {
     cursor: grab;
+    width: 100%;
     .row {
+        width: 100%;
         border-top-width: 0;
         border-radius: 0;
         &:first-child {
@@ -75,6 +83,8 @@ label {
     height: 1.5em;
     border: 1px solid #363633;
     margin: 0;
+    display: inline-block;
+    border-radius: 0.75em;
 }
 
 .upload {
@@ -93,6 +103,9 @@ input[type=number] {
 
 .field-sub {
     margin-left: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
 }
 
 .section {
@@ -101,6 +114,11 @@ input[type=number] {
     padding: 10vh 2vw;
 }
 
+.columns {
+    display: flex;
+}
+
 .column {
+    width: 50%;
     padding: 2em;
 }

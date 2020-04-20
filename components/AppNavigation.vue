@@ -50,7 +50,7 @@ export default {
   transition: 0.8s all cubic-bezier(0.39, 0.575, 0.565, 1);
   h1{
     margin-left: 2em;
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     color:$color_second;
     @media only screen and (max-width: $point_sp) {
       display: none;
