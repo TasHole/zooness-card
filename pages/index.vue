@@ -19,179 +19,41 @@
           li 名刺交換が楽（QRコードを相手に撮ってもらうだけ）
         .preview
           img(:src="canvasData")
+        button.button.is-link(@click="onClickDownload")
+          v-icon.icon="mdi-download"
+          span ダウンロード
+
       .column
-        .columns
-          .column
-            button.button.is-link(@click="onClickAdd")
-              v-icon.icon="mdi-playlist-plus"
-              span レイヤー追加
-          .column
-            button.button.is-link(@click="onClickDownload")
-              v-icon.icon="mdi-download"
-              span ダウンロード
-        .columns
-          Dragable.layers(v-model="layers")
-            .row.is-flex(
-              v-for="(layer, index) in layers"
-              :key="layer.id"
-              )
-              span {{ layer.name }}：
-              v-icon.icon="mdi-cloud"
-              span.expandable {{ layer.type }}
-              button.button.fixed-item(
-                title="編集"
-                @click="onClickEdit(index)"
-                )
-                v-icon.icon="mdi-comment-edit-outline"
-              button.button.fixed-item(
-                title="コピーを作成"
-                @click="onClickCopy(index)"
-                )
-                v-icon.icon="mdi-content-duplicate"
-              button.button.fixed-item(
-                title="削除"
-                @click="onClickRemove(index)"
-                )
-                v-icon.icon="mdi-delete"
         .layer-config(v-if="currentLayer")
           .field
-            v-select(v-model="currentLayer.type" :items="LayerTypeNames" label="種類" return-object)
+            v-text-field.input(v-model="currentLayer.text" label="氏名")
           .field
-            label 位置
-            .field.field-sub.has-addons
-              .field
-                label X
-                .field
-                  p.control
-                    input.input(
-                      type="number"
-                      min="-9999"
-                      max="9999"
-                      v-model.number="currentLayer.x")
-                  .field.has-addons
-                    button.button(@click="onClickLeft")
-                      v-icon.icon="mdi-format-horizontal-align-left"
-                    button.button(@click="onClickCenter")
-                      v-icon.icon="mdi-format-horizontal-align-center"
-                    button.button(@click="onClickRight")
-                      v-icon.icon="mdi-format-horizontal-align-right"
-              .field
-                label Y
-                .field
-                  p.control
-                    input.input(
-                      type="number"
-                      min="-9999"
-                      max="9999"
-                      v-model.number="currentLayer.y")
-                  .field.has-addons
-                    button.button(@click="onClickTop")
-                      v-icon.icon="mdi-format-vertical-align-top"
-                    button.button(@click="onClickMiddle")
-                      v-icon.icon="mdi-format-vertical-align-center"
-                    button.button(@click="onClickBottom")
-                      v-icon.icon="mdi-format-vertical-align-bottom"
-          Size(
-            v-if="!currentLayer.isText"
-            v-model="currentLayer.size"
-            :max-width="canvasWidth"
-            :max-height="canvasHeight")
-          Font(
-            v-if="currentLayer.isText"
-            v-model="currentLayer.font")
-          .field(v-if="!currentLayer.isImage")
-            .field.is-narrow
-              label 色
-              p.control.field-sub
-                button.button(
-                  @click.stop="toggleColorPicker(currentLayer)")
-                  span.color-sample(
-                    :style="{ backgroundColor: Color2CSS(currentLayer.color) }")
-            .field.is-narrow
-              label 枠線
-              .field.field-sub.has-addons
-                p.control
-                  button.button(
-                    @click.stop="toggleColorPicker(currentLayer.border)")
-                    span.color-sample(
-                      :style="{ backgroundColor: Color2CSS(currentLayer.border.color) }")
-                p.control
-                  input.input(
-                    type="number"
-                    min="0"
-                    max="9999"
-                    v-model.number="currentLayer.border.width")
-          .columns(v-if="currentLayer.colorPicker")
-            .column.has-text-centered
-              .color-picker(@click.stop)
-                Sketch(v-model="currentLayer.color")
-          .columns(v-if="currentLayer.border.colorPicker")
-            .column.has-text-centered
-              .color-picker(@click.stop)
-                Sketch(v-model="currentLayer.border.color")
-          .field.is-horizontal
-            label シャドウ
-            p.control
-              v-switch.v-model="currentLayer.shadow.isEnable"
-            .field.is-narrow
-              p.control
-                button.button(
-                  :disabled="!currentLayer.shadow.isEnable"
-                  @click.stop="toggleColorPicker(currentLayer.shadow)")
-                  span.color-sample(
-                    :style="{ backgroundColor: Color2CSS(currentLayer.shadow.color) }")
-            .field.is-narrow
-              label ぼかし
-              p.control
-                input.input(
-                  :disabled="!currentLayer.shadow.isEnable"
-                  type="number"
-                  min="0"
-                  max="999"
-                  v-model.number="currentLayer.shadow.blur")
-            .field.is-horizontal
-              .field.is-narrow
-                label X
-                p.control
-                  input.input(
-                    :disabled="!currentLayer.shadow.isEnable"
-                    type="number"
-                    min="-999"
-                    max="999"
-                    v-model.number="currentLayer.shadow.x")
-              .field.is-narrow
-                label Y
-                p.control
-                  input.input(
-                    :disabled="!currentLayer.shadow.isEnable"
-                    type="number"
-                    min="-999"
-                    max="999"
-                    v-model.number="currentLayer.shadow.y")
-          .columns(v-if="currentLayer.shadow.colorPicker")
-            .column.has-text-centered
-              .color-picker(@click.stop)
-                Sketch(v-model="currentLayer.shadow.color")
-          .field(v-if="currentLayer.isText")
-            label テキスト
-            p.control
-              v-text-field.input(v-model="currentLayer.text")
-          .field(v-if="currentLayer.isImage")
+            v-text-field.input(v-model="currentLayer.text" label="かな")
+          .field
+            v-text-field.input(v-model="currentLayer.text" label="会社名/部署")
+          .field
+            v-text-field.input(v-model="currentLayer.text" label="肩書")
+          .field
+            v-text-field.input(v-model="currentLayer.text" label="QRコードURL" prepend-icon="mdi-qrcode" :rules="[rules.url]")
+          .field
             v-file-input(
               v-model="uploadedFile"
+              label="会社ロゴ画像"
               accept="image/*"
+              prepend-icon="mdi-camera"
               drag-drop
               )
-              .content.has-text-centered
-                p
-                  v-icon(
-                    icon="upload"
-                    size="is-large"
-                  )
-                p.is-size-7
-                  | 画像ファイルをドロップ
-                  br
-                  | または、クリックしてファイルを選択
+
+          .columns
+            .column
+              label 色
+              button.button(
+                @click.stop="toggleColorPicker(currentLayer)")
+                span.color-sample(
+                  :style="{ backgroundColor: Color2CSS(currentLayer.color) }")
+            .column(v-if="currentLayer.colorPicker")
+              .color-picker(@click.stop)
+                Sketch(v-model="currentLayer.color")
 </template>
 
 <script>
@@ -363,7 +225,7 @@ class Layer {
             context.shadowOffsetY = this.shadow.y
         }
         switch (this.type) {
-            case 1:
+            case '円・楕円':
                 {
                     const radius = (this.width - this.border.width) / 2
                     const radiusY = (this.height - this.border.width) / 2
@@ -378,14 +240,14 @@ class Layer {
                     }
                     break
                 }
-            case 2:
+            case '画像':
                 {
                     if (this.image.src) {
                         context.drawImage(this.image, this.x, this.y, this.width, this.height)
                     }
                     break
                 }
-            case 3:
+            case 'テキスト':
                 {
                     if (this.text) {
                         if (this.font) {
@@ -447,6 +309,13 @@ export default {
             uploadedFile: null,
             linkElements: [],
             updateTimer: null,
+            url: '',
+            rules: {
+              url: value => {
+                const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                return pattern.test(value) || '英数字で入力してください。'
+              },
+            },
         }
     },
     computed: {
@@ -483,6 +352,21 @@ export default {
         },
     },
     mounted() {
+        for (var i = 0; i < 10; i++) {
+          this.maxId++
+                const layer = new Layer(this.maxId)
+            layer.width = this.canvasWidth
+            layer.height = this.canvasHeight
+            layer.image.onload = () => {
+                this.onLoadImage(layer)
+            }
+            this.layers.push(layer)
+            this.indexLayers = this.layers.length - 1
+        }
+        /* 初期化 */
+
+
+        /* キャンバスの描画 */
         this.updateCanvas()
     },
     methods: {

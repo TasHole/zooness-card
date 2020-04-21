@@ -23,7 +23,7 @@
           label 幅
           .field
             p.control.has-icons-left
-              input.input(
+              v-text-field.input(
                 type="number"
                 min="0"
                 max="9999"
@@ -33,7 +33,7 @@
           label 高さ
           .field
             p.control.has-icons-left
-              input.input(
+              v-text-field.input(
                 type="number"
                 min="0"
                 max="9999"

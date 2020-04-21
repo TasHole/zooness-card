@@ -14,16 +14,16 @@
           button.button(
             @click="onClickBold"
             :class="val.bold ? 'is-success' : ''")
-            b-icon(icon="format-bold")
+            v-icon.icon="format-bold"
         p.control
           button.button(
             @click="onClickItalic"
             :class="val.italic ? 'is-success' : ''")
-            b-icon(icon="format-italic")
+            v-icon.icon="format-italic"
     .field
       label サイズ
       p.control
-        input.input(
+        v-text-field.input(
           type="number"
           min="0"
           max="999"
