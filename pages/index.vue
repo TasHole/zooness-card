@@ -37,7 +37,7 @@
               )
               span {{ layer.name }}：
               v-icon.icon="mdi-cloud"
-              span.expandable {{ layer.typeName }}
+              span.expandable {{ layer.type }}
               button.button.fixed-item(
                 title="編集"
                 @click="onClickEdit(index)"
@@ -55,8 +55,7 @@
                 v-icon.icon="mdi-delete"
         .layer-config(v-if="currentLayer")
           .field
-            label 種類
-            v-select(v-model="currentLayer.type" :items="LayerTypeNames")
+            v-select(v-model="currentLayer.type" :items="LayerTypeNames" label="種類" return-object)
           .field
             label 位置
             .field.field-sub.has-addons
@@ -256,7 +255,7 @@ class Layer {
             this.font = Font.createDefault(src.font)
             this.text = src.text
         } else {
-            this.type = 0
+            this.type = '矩形'
             this.x = 0
             this.y = 0
             this.size = Size.createDefault()
@@ -269,19 +268,19 @@ class Layer {
     }
 
     get isRect() {
-        return this.type === 0
+        return this.type === '矩形'
     }
 
     get isCircle() {
-        return this.type === 1
+        return this.type === '円・楕円'
     }
 
     get isImage() {
-        return this.type === 2
+        return this.type === '画像'
     }
 
     get isText() {
-        return this.type === 3
+        return this.type === 'テキスト'
     }
 
     get width() {

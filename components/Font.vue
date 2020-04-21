@@ -3,7 +3,7 @@
     .field
       label フォント
       .field.has-addons
-        b-select(v-model="fontFace")
+        v-select(v-model="fontFace")
           option(disabled value="")
           option(
             v-for="(font, index) in fontList"
@@ -34,7 +34,7 @@
         .field-body.field-sub
           .field.is-grouped.is-narrow
             label X
-            b-select(v-model="fontAlign")
+            v-select(v-model="fontAlign")
               option(disabled value="")
               option(value="start") start
               option(value="end") end
@@ -43,7 +43,7 @@
               option(value="center") center
           .field.is-grouped.is-narrow
             label Y
-            b-select(v-model="fontBaseline")
+            v-select(v-model="fontBaseline")
               option(disabled value="")
               option(value="top") top
               option(value="hanging") hanging
