@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-app.section.is-size-7-touch(@click="onClick")
+  v-flex.section.is-size-7-touch(@click="onClick")
     canvas#canvas(
       :width="canvasWidth"
       :height="canvasHeight"
@@ -7,7 +7,7 @@
     .columns
       .column
         p
-          | そのZoom背景、名刺にしておけば良いのかも。
+          |名刺交換できないなら、Zoom背景を名刺にしておけば良いのかも。
           br
           | 原案は、Findy石川さん（
           a(href="https://twitter.com/HRBizDev1/status/1250319945629483011" target="_blank") @HRBizDev1
@@ -103,7 +103,7 @@ class Shadow {
 class Layer {
     constructor(id, src = null) {
         this.id = id
-        this.name = 'レイヤー' + id
+        this.name = 'Layer' + id
         this.image = new Image()
         this.colorPicker = false
         if (src) {
@@ -117,7 +117,7 @@ class Layer {
             this.font = Font.createDefault(src.font)
             this.text = src.text
         } else {
-            this.type = '矩形'
+            this.type = 0
             this.x = 0
             this.y = 0
             this.size = Size.createDefault()
@@ -130,19 +130,19 @@ class Layer {
     }
 
     get isRect() {
-        return this.type === '矩形'
+        return this.type === 0
     }
 
     get isCircle() {
-        return this.type === '円・楕円'
-    }
-
-    get isImage() {
-        return this.type === '画像'
+        return this.type === 1
     }
 
     get isText() {
-        return this.type === 'テキスト'
+        return this.type === 3
+    }
+
+    get isImage() {
+        return this.type === 4
     }
 
     get width() {
@@ -159,19 +159,6 @@ class Layer {
 
     set height(val) {
         this.size.height = val
-    }
-
-    get icon() {
-        if (this.isCircle) {
-            return this.border.width > 0 ? 'circle-outline' : 'circle'
-        }
-        if (this.isImage) {
-            return 'image'
-        }
-        if (this.isText) {
-            return 'format-color-text'
-        }
-        return this.border.width > 0 ? 'square-outline' : 'square'
     }
 
     get style() {
@@ -194,7 +181,7 @@ class Layer {
     }
 
     static get TypeNames() {
-        return ['矩形', '円・楕円', '画像', 'テキスト']
+        return [0, 1, 2, 3, 4]
     }
 
     get typeName() {
@@ -225,29 +212,27 @@ class Layer {
             context.shadowOffsetY = this.shadow.y
         }
         switch (this.type) {
-            case '円・楕円':
+            case 1: //台形1
                 {
-                    const radius = (this.width - this.border.width) / 2
-                    const radiusY = (this.height - this.border.width) / 2
-                    const centerX = this.x + radius + this.border.width / 2
-                    const centerY = this.y + radius + this.border.width / 2
-                    context.beginPath()
-                    context.scale(1, radiusY / radius)
-                    context.arc(centerX, centerY, radius, 0, Math.PI * 2, true)
+                    context.setTransform(1,0,-0.5,1,this.width*0.5,0)
+                    context.fillRect(this.x, this.y, this.width, this.height)
                     context.fill()
                     if (this.border.width > 0) {
                         context.stroke()
                     }
                     break
                 }
-            case '画像':
+            case 2: //台形2
                 {
-                    if (this.image.src) {
-                        context.drawImage(this.image, this.x, this.y, this.width, this.height)
+                    context.setTransform(1,0,-0.5,1,this.width*0.6,0)
+                    context.fillRect(this.x, this.y, this.width, this.height)
+                    context.fill()
+                    if (this.border.width > 0) {
+                        context.stroke()
                     }
                     break
-                }
-            case 'テキスト':
+            }
+            case 3: //文字
                 {
                     if (this.text) {
                         if (this.font) {
@@ -274,7 +259,14 @@ class Layer {
                     }
                     break
                 }
-            default:
+            case 4: //画像
+                {
+                    if (this.image.src) {
+                        context.drawImage(this.image, this.x, this.y, this.width, this.height)
+                    }
+                    break
+                }
+            default: //矩形
                 {
                     context.fillRect(this.x, this.y, this.width, this.height)
                     if (this.border.width > 0) {
@@ -364,7 +356,44 @@ export default {
             this.indexLayers = this.layers.length - 1
         }
         /* 初期化 */
+        this.layers[9].type = 3
+        this.layers[9].color = { hex: '#000' }
+        this.layers[9].text = "aaaa"
 
+        this.layers[8].type = 3
+        this.layers[8].color = { hex: '#000' }
+        this.layers[8].text = "aaaa"
+
+        this.layers[7].type = 3
+        this.layers[7].color = { hex: '#000' }
+        this.layers[7].text = "aaaa"
+
+        this.layers[6].type = 3
+        this.layers[6].color = { hex: '#000' }
+        this.layers[6].text = "aaaa"
+
+        this.layers[5].type = 3
+        this.layers[5].color = { hex: '#000' }
+        this.layers[5].text = "aaaa"
+
+        this.layers[4].type = 3
+        this.layers[4].color = { hex: '#000' }
+        this.layers[4].text = "aaaa"
+
+        this.layers[3].type = 3
+        this.layers[3].color = { hex: '#000' }
+        this.layers[3].text = "aaaa"
+
+        this.layers[2].type = 2
+        this.layers[2].color = { hex: '#fff' }
+
+        this.layers[1].type = 1
+        this.layers[1].color = { hex: '#333' }
+
+        this.layers[0].type = 4
+        this.layers[0].image.onload = () => {
+                this.onLoadImage(layer)
+            }
 
         /* キャンバスの描画 */
         this.updateCanvas()

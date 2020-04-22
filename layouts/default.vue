@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  v-app
     app-navigation
     nuxt
     app-footer
