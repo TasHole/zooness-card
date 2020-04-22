@@ -1,9 +1,11 @@
 <template>
   <section class="footer">
-    <div class="writes">
-      <SVGElement name="stayhome" class="stayhome" />
-      <p>&copy; 2020 Tatsuya Sato</p>
-    </div>
+    <a href="https://tatsuya.tokyo">
+      <div class="writes">
+        <SVGElement name="stayhome" class="stayhome" />
+        <p>&copy; 2020 Tatsuya Sato</p>
+      </div>
+    </a>
   </section>
 </template>
 
@@ -15,6 +17,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+a:hover{
+  svg{
+    transition: transform 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+    transform: scale(1.2);
+  }
+}
 .footer {
   display: flex;
   text-align: center;
@@ -35,7 +43,7 @@ export default {
       margin: 0 auto;
     }
     p {
-      margin: 0;
+      margin: 10px 0 0;
     }
   }
 }

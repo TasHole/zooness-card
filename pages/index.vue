@@ -26,34 +26,32 @@
       .column
         .layer-config(v-if="currentLayer")
           .field
-            v-text-field.input(v-model="currentLayer.text" label="氏名")
+            v-text-field.input(v-model="layers[9].text" label="氏名" v-on:click="onClickEdit(9)")
           .field
-            v-text-field.input(v-model="currentLayer.text" label="かな")
+            v-text-field.input(v-model="layers[8].text" label="かな" v-on:click="onClickEdit(8)")
           .field
-            v-text-field.input(v-model="currentLayer.text" label="会社名/部署")
+            v-text-field.input(v-model="layers[7].text" label="会社/部署" v-on:click="onClickEdit(7)")
           .field
-            v-text-field.input(v-model="currentLayer.text" label="肩書")
+            v-text-field.input(v-model="layers[6].text" label="肩書" v-on:click="onClickEdit(6)")
           .field
-            v-text-field.input(v-model="currentLayer.text" label="QRコードURL" prepend-icon="mdi-qrcode" :rules="[rules.url]")
+            v-text-field.input(v-model="layers[5].text" label="QRコードURL" prepend-icon="mdi-qrcode" :rules="[rules.url]" v-on:click="onClickEdit(5)")
           .field
-            v-file-input(
-              v-model="uploadedFile"
+            input(
+              type="file"
               label="会社ロゴ画像"
               accept="image/*"
-              prepend-icon="mdi-camera"
-              drag-drop
+              @change="onLoadImage()"
               )
 
           .columns
             .column
               label 色
               button.button(
-                @click.stop="toggleColorPicker(currentLayer)")
-                span.color-sample(
-                  :style="{ backgroundColor: Color2CSS(currentLayer.color) }")
-            .column(v-if="currentLayer.colorPicker")
+                @click.stop="toggleColorPicker(layers[1].color)")
+                span.color-sample(:style="{ backgroundColor: Color2CSS(layers[1].color) }")
+            .column
               .color-picker(@click.stop)
-                Sketch(v-model="currentLayer.color")
+                Sketch(v-model="layers[1].color")
 </template>
 
 <script>
@@ -81,25 +79,6 @@ function Color2CSS(color) {
         return color.hex
     }
 }
-
-class Border {
-    constructor(w = 0, c = null) {
-        this.width = w
-        this.color = { hex: '#000' }
-        this.colorPicker = false
-    }
-}
-
-class Shadow {
-    constructor() {
-        this.color = { hex: '#000' }
-        this.colorPicker = false
-        this.x = 0
-        this.y = 0
-        this.blur = 0
-        this.isEnable = false
-    }
-}
 class Layer {
     constructor(id, src = null) {
         this.id = id
@@ -111,8 +90,6 @@ class Layer {
             this.x = src.x
             this.y = src.y
             this.size = Size.createDefault(src.size)
-            this.shadow = JSON.parse(JSON.stringify(src.shadow))
-            this.border = JSON.parse(JSON.stringify(src.border))
             this.color = JSON.parse(JSON.stringify(src.color))
             this.font = Font.createDefault(src.font)
             this.text = src.text
@@ -121,8 +98,6 @@ class Layer {
             this.x = 0
             this.y = 0
             this.size = Size.createDefault()
-            this.shadow = new Shadow()
-            this.border = new Border()
             this.color = { hex: '#fff' }
             this.font = Font.createDefault()
             this.text = ''
@@ -188,48 +163,20 @@ class Layer {
         return Layer.TypeNames[this.type]
     }
 
-    get typeIcon() {
-        if (this.isCircle) {
-            return 'circle'
-        }
-        if (this.isImage) {
-            return 'image'
-        }
-        if (this.isText) {
-            return 'format-color-text'
-        }
-        return 'square'
-    }
-
     render(context) {
-        context.lineWidth = this.border.width
-        context.strokeStyle = Color2CSS(this.border.color)
         context.fillStyle = Color2CSS(this.color)
-        if (this.shadow.isEnable) {
-            context.shadowColor = Color2CSS(this.shadow.color)
-            context.shadowBlur = this.shadow.blur
-            context.shadowOffsetX = this.shadow.x
-            context.shadowOffsetY = this.shadow.y
-        }
         switch (this.type) {
             case 1: //台形1
                 {
                     context.setTransform(1,0,-0.5,1,this.width*0.5,0)
                     context.fillRect(this.x, this.y, this.width, this.height)
-                    context.fill()
-                    if (this.border.width > 0) {
-                        context.stroke()
-                    }
                     break
                 }
-            case 2: //台形2
+            case 2: //台形2(ぼかしマスク)
                 {
-                    context.setTransform(1,0,-0.5,1,this.width*0.6,0)
+                    context.setTransform(1,0,-0.5,1,this.width*0.66,0)
+                    context.fillStyle = "rgba(255,255,255,0.4)"
                     context.fillRect(this.x, this.y, this.width, this.height)
-                    context.fill()
-                    if (this.border.width > 0) {
-                        context.stroke()
-                    }
                     break
             }
             case 3: //文字
@@ -253,9 +200,6 @@ class Layer {
                             context.textBaseline = this.font.baseline
                         }
                         context.fillText(this.text, this.x, this.y)
-                        if (this.border.width > 0) {
-                            context.strokeText(this.text, this.x, this.y)
-                        }
                     }
                     break
                 }
@@ -266,17 +210,17 @@ class Layer {
                     }
                     break
                 }
+            case 5: //画像(ぼかしロゴ)
+                {
+                    if (this.image.src) {
+                        context.filter = "blur(40px)";
+                        context.drawImage(this.image, this.x, this.y, this.width, this.height)
+                    }
+                    break
+                }
             default: //矩形
                 {
                     context.fillRect(this.x, this.y, this.width, this.height)
-                    if (this.border.width > 0) {
-                        context.strokeRect(
-                            this.x + this.border.width / 2,
-                            this.y + this.border.width / 2,
-                            this.width - this.border.width,
-                            this.height - this.border.width
-                        )
-                    }
                 }
         }
     }
@@ -356,44 +300,45 @@ export default {
             this.indexLayers = this.layers.length - 1
         }
         /* 初期化 */
+
+        //氏名
         this.layers[9].type = 3
         this.layers[9].color = { hex: '#000' }
-        this.layers[9].text = "aaaa"
-
+        this.layers[9].text = ""
+        //かな
         this.layers[8].type = 3
         this.layers[8].color = { hex: '#000' }
-        this.layers[8].text = "aaaa"
-
+        this.layers[8].text = ""
+        //会社/部署
         this.layers[7].type = 3
         this.layers[7].color = { hex: '#000' }
-        this.layers[7].text = "aaaa"
-
+        this.layers[7].text = ""
+        //肩書
         this.layers[6].type = 3
         this.layers[6].color = { hex: '#000' }
-        this.layers[6].text = "aaaa"
-
+        this.layers[6].text = ""
+        //QRコードURL
         this.layers[5].type = 3
         this.layers[5].color = { hex: '#000' }
-        this.layers[5].text = "aaaa"
-
-        this.layers[4].type = 3
-        this.layers[4].color = { hex: '#000' }
-        this.layers[4].text = "aaaa"
-
-        this.layers[3].type = 3
-        this.layers[3].color = { hex: '#000' }
-        this.layers[3].text = "aaaa"
-
-        this.layers[2].type = 2
-        this.layers[2].color = { hex: '#fff' }
-
+        this.layers[5].text = "https://8card.net/p/"
+        //会社ロゴ
+        this.layers[4].type = 4
+        this.layers[4].image.onload = () => {
+            this.onLoadImage(layer)
+        }
+        //ぼかしマスク
+        this.layers[3].type = 2
+        //会社ロゴ（ぼかし）
+        this.layers[2].type = 4
+        this.layers[2].image.onload = () => {
+            this.onLoadImage(layer)
+        }
+        //テーマカラー
         this.layers[1].type = 1
-        this.layers[1].color = { hex: '#333' }
-
-        this.layers[0].type = 4
-        this.layers[0].image.onload = () => {
-                this.onLoadImage(layer)
-            }
+        this.layers[1].color = { hex: '#63B9B4' }
+        //背景イメージ
+        this.layers[0].type = 0
+        this.layers[0].color = { hex: '#fff' }
 
         /* キャンバスの描画 */
         this.updateCanvas()
@@ -402,19 +347,13 @@ export default {
         toggleColorPicker(obj) {
             const b = obj.colorPicker
             this.currentLayer.colorPicker = false
-            this.currentLayer.border.colorPicker = false
-            this.currentLayer.shadow.colorPicker = false
             obj.colorPicker = !b
         },
         Color2CSS(color) {
             return Color2CSS(color)
         },
         onClick() {
-            if (this.currentLayer) {
-                this.currentLayer.colorPicker = false
-                this.currentLayer.border.colorPicker = false
-                this.currentLayer.shadow.colorPicker = false
-            }
+            this.currentLayer.colorPicker = false
         },
         onLoadImage(layer) {
             layer.size.srcWidth = layer.image.naturalWidth
@@ -438,71 +377,11 @@ export default {
             a.href = url
             a.click()
         },
-        onClickAdd() {
-            this.maxId++
-                const layer = new Layer(this.maxId)
-            layer.width = this.canvasWidth
-            layer.height = this.canvasHeight
-            layer.image.onload = () => {
-                this.onLoadImage(layer)
-            }
-            this.layers.push(layer)
-            this.indexLayers = this.layers.length - 1
-        },
         onClickEdit(index) {
             if (this.currentLayer) {
                 this.currentLayer.colorPicker = false
-                this.currentLayer.border.colorPicker = false
-                this.currentLayer.shadow.colorPicker = false
             }
             this.indexLayers = index
-        },
-        onClickCopy(index) {
-            this.maxId++
-                const copy = new Layer(this.maxId, this.layers[index])
-            copy.image.onload = () => {
-                this.onLoadImage(copy)
-            }
-            copy.image.src = this.layers[index].image.src
-            this.layers.push(copy)
-            this.indexLayers = this.layers.length - 1
-        },
-        onClickRemove(index) {
-            if (this.indexLayers === index) {
-                this.indexLayers = -1
-            }
-
-            this.layers.splice(index, 1)
-        },
-        onClickLeft() {
-            this.currentLayer.x = 0
-            this.currentLayer.font.align = 'left'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
-        },
-        onClickCenter() {
-            this.currentLayer.x = (this.canvasWidth - this.currentLayer.width) / 2
-            this.currentLayer.font.align = 'center'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
-        },
-        onClickRight() {
-            this.currentLayer.x = this.canvasWidth - this.currentLayer.width
-            this.currentLayer.font.align = 'right'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
-        },
-        onClickTop() {
-            this.currentLayer.y = 0
-            this.currentLayer.font.baseline = 'top'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
-        },
-        onClickMiddle() {
-            this.currentLayer.y = (this.canvasHeight - this.currentLayer.height) / 2
-            this.currentLayer.font.baseline = 'middle'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
-        },
-        onClickBottom() {
-            this.currentLayer.y = this.canvasHeight - this.currentLayer.height
-            this.currentLayer.font.baseline = 'bottom'
-            this.currentLayer.font = Font.createDefault(this.currentLayer.font)
         },
         updateCanvas() {
             if (this.updateTimer) {
