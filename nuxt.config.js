@@ -94,7 +94,6 @@ module.exports = {
         // Doc: https://axios.nuxtjs.org/usage
         // '@nuxtjs/axios',
         // Doc: https://buefy.github.io/#/documentation
-        ['nuxt-buefy', { css: false }],
         // '@nuxtjs/pwa',
         '@nuxtjs/style-resources',
     ],
