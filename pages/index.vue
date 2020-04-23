@@ -25,6 +25,25 @@
 
       .column
         .layer-config(v-if="currentLayer")
+          .field(v-if="currentLayer")
+            input.input(
+            type="number"
+            min="-9999"
+            max="9999"
+            v-model.number="currentLayer.x")
+            input.input(
+            type="number"
+            min="-9999"
+            max="9999"
+            v-model.number="currentLayer.y")
+            Size(
+            v-if="!currentLayer.isText"
+            v-model="currentLayer.size"
+            :max-width="canvasWidth"
+            :max-height="canvasHeight")
+            Font(
+              v-if="currentLayer.isText"
+              v-model="currentLayer.font")
           .field
             v-text-field.input(v-model="layers[9].text" label="氏名" v-on:click="onClickEdit(9)")
           .field
@@ -34,15 +53,22 @@
           .field
             v-text-field.input(v-model="layers[6].text" label="肩書" v-on:click="onClickEdit(6)")
           .field
-            v-text-field.input(v-model="layers[5].text" label="QRコードURL" prepend-icon="mdi-qrcode" :rules="[rules.url]" v-on:click="onClickEdit(5)")
-          .field
-            input(
-              type="file"
-              label="会社ロゴ画像"
-              accept="image/*"
-              @change="onLoadImage()"
+            v-text-field.input(
+              v-model="layers[5].text"
+              label="QRコードURL"
+              prepend-icon="mdi-qrcode"
+              v-on:click="onClickEdit(5)"
               )
-
+            qriously(:value="layers[5].text" :size="200")
+          .field
+            v-file-input(
+              v-model="uploadedFile"
+              accept="image/*"
+              show-size
+              label="会社ロゴ"
+              prepend-icon="mdi-image"
+              @change="onClickEdit(4)"
+              )
           .columns
             .column
               label 色
@@ -59,6 +85,7 @@ import { Sketch } from 'vue-color'
 import Dragable from 'vuedraggable'
 import Font from '~/components/Font'
 import Size from '~/components/Size'
+import qriously from "~/plugins/qriously.js"
 
 function Color2CSS(color) {
     if (!color) {
@@ -79,6 +106,16 @@ function Color2CSS(color) {
         return color.hex
     }
 }
+class Shadow {
+  constructor() {
+    this.color = { hex: '#000' }
+    this.colorPicker = false
+    this.x = 0
+    this.y = 0
+    this.blur = 0
+    this.isEnable = false
+  }
+}
 class Layer {
     constructor(id, src = null) {
         this.id = id
@@ -90,6 +127,7 @@ class Layer {
             this.x = src.x
             this.y = src.y
             this.size = Size.createDefault(src.size)
+            this.shadow = JSON.parse(JSON.stringify(src.shadow))
             this.color = JSON.parse(JSON.stringify(src.color))
             this.font = Font.createDefault(src.font)
             this.text = src.text
@@ -97,8 +135,9 @@ class Layer {
             this.type = 0
             this.x = 0
             this.y = 0
+            this.shadow = new Shadow()
             this.size = Size.createDefault()
-            this.color = { hex: '#fff' }
+            this.color = { hex: '#333' }
             this.font = Font.createDefault()
             this.text = ''
         }
@@ -156,7 +195,7 @@ class Layer {
     }
 
     static get TypeNames() {
-        return [0, 1, 2, 3, 4]
+        return [0, 1, 2, 3, 4, 5, 6]
     }
 
     get typeName() {
@@ -175,7 +214,7 @@ class Layer {
             case 2: //台形2(ぼかしマスク)
                 {
                     context.setTransform(1,0,-0.5,1,this.width*0.66,0)
-                    context.fillStyle = "rgba(255,255,255,0.4)"
+                    context.fillStyle = "rgba(255,255,255,0.3)"
                     context.fillRect(this.x, this.y, this.width, this.height)
                     break
             }
@@ -194,7 +233,6 @@ class Layer {
                             if (this.font.face) {
                                 font += this.font.face.css
                             }
-
                             context.font = font
                             context.textAlign = this.font.align
                             context.textBaseline = this.font.baseline
@@ -206,15 +244,22 @@ class Layer {
             case 4: //画像
                 {
                     if (this.image.src) {
-                        context.drawImage(this.image, this.x, this.y, this.width, this.height)
+                        context.drawImage(this.image, this.x, this.y, 100 * this.image.width / this.image.height, 100)
                     }
                     break
                 }
             case 5: //画像(ぼかしロゴ)
                 {
                     if (this.image.src) {
-                        context.filter = "blur(40px)";
-                        context.drawImage(this.image, this.x, this.y, this.width, this.height)
+                        context.filter = "blur(40px) opacity(33%)";
+                        context.drawImage(this.image, this.x, this.y, 1000 * this.image.width / this.image.height, 1000)
+                    }
+                    break
+                }
+            case 6: //やじるし
+                {
+                    if (this.image.src) {
+                        context.drawImage(arrow(), this.x, this.y, 1000 * this.image.width / this.image.height, 1000)
                     }
                     break
                 }
@@ -245,6 +290,7 @@ export default {
             uploadedFile: null,
             linkElements: [],
             updateTimer: null,
+            uploadImageUrl: '',
             url: '',
             rules: {
               url: value => {
@@ -264,6 +310,9 @@ export default {
             }
             return null
         },
+        arrow() {
+          return () => import(`~/assets/img/Vector.svg`)
+        },
     },
     watch: {
         canvasWidth(newVal) {
@@ -279,63 +328,84 @@ export default {
             },
         },
         uploadedFile(to, from) {
-            const reader = new FileReader()
-            reader.onload = (e) => {
-                this.currentLayer.image.src = this.currentLayer.imageSrc =
-                    e.target.result
-            }
-            reader.readAsDataURL(to)
-        },
+          const reader = new FileReader()
+          reader.onload = e => {
+            this.layers[4].image.src = this.currentLayer.imageSrc =
+              e.target.result
+            this.layers[2].image.src = this.currentLayer.imageSrc =
+              e.target.result
+          }
+          reader.readAsDataURL(to)
+          this.updateCanvas()
+        }
     },
     mounted() {
-        for (var i = 0; i < 10; i++) {
-          this.maxId++
-                const layer = new Layer(this.maxId)
+        for (var i = 0; i <= 10; i++) {
+            this.maxId++
+            const layer = new Layer(this.maxId)
             layer.width = this.canvasWidth
             layer.height = this.canvasHeight
-            layer.image.onload = () => {
-                this.onLoadImage(layer)
-            }
             this.layers.push(layer)
             this.indexLayers = this.layers.length - 1
         }
         /* 初期化 */
-
+        //矢印
+        this.layers[10].type = 6
+        this.layers[10].x = 1235
+        this.layers[10].y = 310
         //氏名
         this.layers[9].type = 3
-        this.layers[9].color = { hex: '#000' }
-        this.layers[9].text = ""
+        this.layers[9].color = { hex: '#fff' }
+        this.layers[9].text = "佐藤 達也"
+        this.layers[9].font.size = 84
+        this.layers[9].font.bold = true
+        this.layers[9].font.align = "right"
+        this.layers[9].x = 1600
+        this.layers[9].y = 190
         //かな
         this.layers[8].type = 3
-        this.layers[8].color = { hex: '#000' }
-        this.layers[8].text = ""
+        this.layers[8].color = { hex: '#fff' }
+        this.layers[8].text = "さとう　たつや"
+        this.layers[8].font.size = 32
+        this.layers[8].font.align = "right"
+        this.layers[8].x = 1590
+        this.layers[8].y = 130
         //会社/部署
         this.layers[7].type = 3
-        this.layers[7].color = { hex: '#000' }
-        this.layers[7].text = ""
+        this.layers[7].color = { hex: '#333' }
+        this.layers[7].text = "webインテグレーション事業部"
+        this.layers[7].font.size = 32
+        this.layers[7].x = 148
+        this.layers[7].y = 286
         //肩書
         this.layers[6].type = 3
-        this.layers[6].color = { hex: '#000' }
-        this.layers[6].text = ""
+        this.layers[6].color = { hex: '#333' }
+        this.layers[6].text = "開発ディレクター"
+        this.layers[6].font.size = 60
+        this.layers[6].font.bold = true
+        this.layers[6].x = 146
+        this.layers[6].y = 340
         //QRコードURL
         this.layers[5].type = 3
-        this.layers[5].color = { hex: '#000' }
+        this.layers[5].color = { hex: '#333' }
         this.layers[5].text = "https://8card.net/p/"
+        this.layers[5].font.size = 64
         //会社ロゴ
         this.layers[4].type = 4
+        this.layers[4].x = 128
+        this.layers[4].y = 128
         this.layers[4].image.onload = () => {
             this.onLoadImage(layer)
         }
         //ぼかしマスク
         this.layers[3].type = 2
         //会社ロゴ（ぼかし）
-        this.layers[2].type = 4
-        this.layers[2].image.onload = () => {
-            this.onLoadImage(layer)
-        }
+        this.layers[2].type = 5
+        this.layers[2].x = 1000
+        this.layers[2].y = 300
         //テーマカラー
         this.layers[1].type = 1
-        this.layers[1].color = { hex: '#63B9B4' }
+        this.layers[1].color = { hex: '#1B4884' }
         //背景イメージ
         this.layers[0].type = 0
         this.layers[0].color = { hex: '#fff' }
@@ -355,16 +425,19 @@ export default {
         onClick() {
             this.currentLayer.colorPicker = false
         },
-        onLoadImage(layer) {
-            layer.size.srcWidth = layer.image.naturalWidth
-            layer.size.srcHeight = layer.image.naturalHeight
-            const ratioX = this.canvasWidth / layer.image.naturalWidth
-            const ratioY = this.canvasHeight / layer.image.naturalHeight
-            const ratio = Math.min(ratioX, ratioY)
-            layer.width = Math.floor(layer.image.naturalWidth * ratio)
-            layer.height = Math.floor(layer.image.naturalHeight * ratio)
-            layer.size = Size.createDefault(layer.size)
-            this.updateCanvas()
+        onImagePicked(file) {
+          if (file !== undefined && file !== null) {
+            if (file.name.lastIndexOf('.') <= 0) {
+              return
+            }
+            const fr = new FileReader()
+            fr.readAsDataURL(file[0])
+            fr.addEventListener('onload', () => {
+              this.uploadImageUrl = fr.result
+            })
+          } else {
+            this.uploadImageUrl = ''
+          }
         },
         onClickDownload() {
             if (this.blobUrl) {

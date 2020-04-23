@@ -1,6 +1,21 @@
 <template lang="pug">
   .field
-    .field.is-grouped
+    .field.is-horizontal
+      v-text-field.input(
+        type="number"
+        min="0"
+        max="9999"
+        label="幅"
+        prepend-icon="mdi-arrow-expand-horizontal"
+        v-model.number="sizeWidth")
+      v-text-field.input(
+        type="number"
+        min="0"
+        max="9999"
+        label="高さ"
+        prepend-icon="mdi-arrow-expand-vertical"
+        v-model.number="sizeHeight"
+          )
       label サイズ
       .field.has-addons
         button.button(
@@ -17,28 +32,6 @@
           title="実サイズに合わせる"
           @click="onClickCollapse")
           v-icon.icon="mdi-arrow-collapse-all"
-    .field.is-horizontal
-      .field-body.field-sub
-        .field.is-grouped.is-narrow
-          label 幅
-          .field
-            p.control.has-icons-left
-              v-text-field.input(
-                type="number"
-                min="0"
-                max="9999"
-                v-model.number="sizeWidth")
-              v-icon.is-left.icon="mdi-arrow-expand-horizontal"
-        .field.is-grouped.is-narrow
-          label 高さ
-          .field
-            p.control.has-icons-left
-              v-text-field.input(
-                type="number"
-                min="0"
-                max="9999"
-                v-model.number="sizeHeight")
-              v-icon.is-left.icon="mdi-arrow-expand-vertical"
 </template>
 
 <script>
@@ -63,7 +56,7 @@ function _sizeData(data, maxWidth, maxHeight) {
     srcHeight = data.srcHeight
   }
 
-  let ratio = null
+  let ratio = true
   if (data && typeof data.ratio !== 'undefined') {
     ratio = data.ratio
   }

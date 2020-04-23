@@ -1,86 +1,31 @@
 <template lang="pug">
   .field.is-grouped.is-wrap
-    .field
-      label フォント
-      .field.has-addons
-        v-select(v-model="fontFace")
-          option(disabled value="")
-          option(
-            v-for="(font, index) in fontList"
-            :key="index"
-            :value="font"
-            ) {{ font.name }}
-        p.control
-          button.button(
-            @click="onClickBold"
-            :class="val.bold ? 'is-success' : ''")
-            v-icon.icon="format-bold"
-        p.control
-          button.button(
-            @click="onClickItalic"
-            :class="val.italic ? 'is-success' : ''")
-            v-icon.icon="format-italic"
-    .field
-      label サイズ
-      p.control
-        v-text-field.input(
-          type="number"
-          min="0"
-          max="999"
-          v-model.number="fontSize")
-    .field
-      label 配置
-      .field.is-horizontal
-        .field-body.field-sub
-          .field.is-grouped.is-narrow
-            label X
-            v-select(v-model="fontAlign")
-              option(disabled value="")
-              option(value="start") start
-              option(value="end") end
-              option(value="left") left
-              option(value="right") right
-              option(value="center") center
-          .field.is-grouped.is-narrow
-            label Y
-            v-select(v-model="fontBaseline")
-              option(disabled value="")
-              option(value="top") top
-              option(value="hanging") hanging
-              option(value="middle") middle
-              option(value="alphabetic") alphabetic
-              option(value="ideographic") ideographic
-              option(value="bottom") bottom
+    .field.is-horizontal
+      v-select.font-size(v-model="fontFace" item-text="name" item-value="css" :items="fontList" label="フォント" dense return-object)
+      v-text-field.font-size.input( label="サイズ" type="number" min="0" max="999" dense v-model.number="fontSize")
+    .field.is-horizontal
+      .field.font-style
+        v-select(v-model="fontAlign" :items="fontAlignList" label="横方向" dense)
+      .field.font-style
+        v-select(v-model="fontBaseline" :items="fontBaselineList" label="縦方向" dense)
+      button.font-style(
+        @click="onClickBold"
+        :class="val.bold ? 'is-success' : ''")
+        v-icon.icon="mdi-format-bold"
+      button.font-style(
+        @click="onClickItalic"
+        :class="val.italic ? 'is-success' : ''")
+        v-icon.icon="mdi-format-italic"
 </template>
 
 <script>
 const _fontList = [
-  { name: 'arial', css: '"arial"' },
-  { name: 'arial black', css: '"arial black"' },
-  { name: 'arial narrow', css: '"arial narrow"' },
-  { name: 'arial unicode ms', css: '"arial unicode ms"' },
-  { name: 'Comic Sans MS', css: '"Comic Sans MS"' },
-  { name: 'Courier', css: '"Courier"' },
-  { name: 'Courier New', css: '"Courier New"' },
-  { name: 'fantasy', css: '"fantasy"' },
-  { name: 'Georgia', css: '"Georgia"' },
-  { name: 'Impact', css: '"Impact"' },
-  { name: 'Meiryo UI', css: '"Meiryo UI"' },
-  { name: 'Microsoft Sans Serif', css: '"Microsoft Sans Serif"' },
-  { name: 'MS UI Gothic', css: '"MS UI Gothic"' },
-  { name: 'monospace', css: '"monospace"' },
-  { name: 'Osaka', css: '"Osaka"' },
-  { name: 'Osaka－等幅', css: '"Osaka－等幅","Osaka-Mono"' },
-  { name: 'sans-serif', css: '"sans-serif"' },
-  { name: 'serif', css: '"serif"' },
-  { name: 'Tahoma', css: '"Tahoma"' },
-  { name: 'Times New Roman', css: '"Times New Roman"' },
-  { name: 'Verdana', css: '"Verdana"' },
-  { name: 'ＭＳ Ｐゴシック', css: '"ＭＳ Ｐゴシック","MS PGothic"' },
-  { name: 'ＭＳ ゴシック', css: '"ＭＳ ゴシック","MS Gothic"' },
-  { name: 'ＭＳ Ｐ明朝', css: '"ＭＳ Ｐ明朝","MS PMincho"' },
-  { name: 'ＭＳ 明朝', css: '"ＭＳ 明朝","MS Mincho"' },
   {
+    name: 'Noto Sans JP',
+    css: '"Noto Sans JP"',
+    href: 'https://fonts.googleapis.com/css?family=Noto+Sans+JP',
+  },
+    {
     name: 'ヒラギノ角ゴ Pro W3',
     css: '"ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro"',
   },
@@ -174,15 +119,14 @@ const _fontList = [
     css: '"Nico Moji"',
     href: 'https://fonts.googleapis.com/earlyaccess/nicomoji.css',
   },
-  {
-    name: 'Noto Sans JP',
-    css: '"Noto Sans JP"',
-    href: 'https://fonts.googleapis.com/css?family=Noto+Sans+JP',
-  },
 ]
 
 function _fontData(data) {
-  let face = ''
+  let face = {
+    name: 'Noto Sans JP',
+    css: '"Noto Sans JP"',
+    href: 'https://fonts.googleapis.com/css?family=Noto+Sans+JP',
+  }
   if (data && typeof data.face !== 'undefined') {
     face = data.face
   }
@@ -197,7 +141,7 @@ function _fontData(data) {
     italic = data.italic
   }
 
-  let size = 50
+  let size = 64
   if (data && typeof data.size !== 'undefined') {
     size = data.size
   }
@@ -228,6 +172,8 @@ export default {
   data() {
     return {
       val: _fontData(this.value),
+      fontAlignList: ['start', 'end', 'left', 'right', 'center'],
+      fontBaselineList : ['top', 'middle', 'bottom'],
     }
   },
   computed: {

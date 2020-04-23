@@ -21,6 +21,7 @@
         "express": "^4.16.4",
         "nuxt": "^2.4.0",
         "vue-color": "^2.7.0",
+        "vue-qriously": "^1.1.1",
         "vuedraggable": "^2.20.0"
     },
     "devDependencies": {
