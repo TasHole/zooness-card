@@ -10,7 +10,7 @@
         </h1>
         <div class="links">
           <a
-            href="https://twitter.com/tatt_san/"
+            href="https://twiter.com/share?url=https://zooness-card.work/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -18,7 +18,7 @@
           </a>
 
           <a
-            href="http://b.hatena.ne.jp/add?mode=confirm&url={URL}&title={ページのタイトル}"
+            href="http://b.hatena.ne.jp/add?mode=confirm&url=https://zooness-card.work/&title=はじめてのweb会議を少しだけスムーズに"
             target="_blank"
             rel="nofollow"
           >
