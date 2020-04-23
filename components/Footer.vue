@@ -1,11 +1,24 @@
 <template>
   <section class="footer">
+    <div class="writes">
+    <p class="please">
+    ＼よかったら
+    <a
+      href="https://twitter.com/tatt_san/"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      フォロー
+    </a>
+    してください／
+    </p>
     <a href="https://tatsuya.tokyo">
-      <div class="writes">
+      <div>
         <SVGElement name="stayhome" class="stayhome" />
         <p>&copy; 2020 Tatsuya Sato</p>
       </div>
     </a>
+    </div>
   </section>
 </template>
 
@@ -24,6 +37,9 @@ a:hover{
   }
 }
 .footer {
+  .please{
+    font-size:0.8em;
+  }
   display: flex;
   text-align: center;
   background-color: $ground_color;
