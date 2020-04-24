@@ -6,12 +6,13 @@
       )
     .columns
       .column
+        h2 バーチャル背景を名刺にして、“データで”交換しませんか？
         p
-          |名刺交換できないなら、バーチャル背景を名刺にしておけば良いのかも。
-          br
           | 原案は、Findy石川さん（
           a(href="https://twitter.com/HRBizDev1/status/1250319945629483011" target="_blank") @HRBizDev1
           | ）のツイートから。
+          br
+          | フォームに入力すると簡単に生成できます。
         h3 メリット
         ol
           li 名前の読み違いが起こらない
@@ -19,20 +20,26 @@
           li 名刺交換が楽（QRコードを相手に撮ってもらうだけ）
         .preview
           img(:src="canvasData")
-        button.button.is-link(@click="onClickDownload")
-          v-icon.icon="mdi-download"
-          span ダウンロード
-
       .column
         .layer-config(v-if="currentLayer")
           .field
-            v-text-field.input(v-model="layers[9].text" label="氏名" v-on:click="onClickEdit(9)")
+              v-file-input(
+                v-model="uploadedFile"
+                accept="image/*"
+                show-size
+                label="会社ロゴ"
+                prepend-icon="mdi-image"
+                @change="onClickEdit(4)"
+                )
           .field
-            v-text-field.input(v-model="layers[8].text" label="かな" v-on:click="onClickEdit(8)")
+            v-text-field.input(v-model="layers[7].text" label="会社/部署" v-on:click="onClickEdit(7)" prepend-icon="mdi-city")
           .field
-            v-text-field.input(v-model="layers[7].text" label="会社/部署" v-on:click="onClickEdit(7)")
+            v-text-field.input(v-model="layers[6].text" label="肩書" v-on:click="onClickEdit(6)" prepend-icon="mdi-tie")
           .field
-            v-text-field.input(v-model="layers[6].text" label="肩書" v-on:click="onClickEdit(6)")
+            v-text-field.input(v-model="layers[8].text" label="かな" v-on:click="onClickEdit(8)" prepend-icon="mdi-alphabetical")
+          .field
+            v-text-field.input(v-model="layers[9].text" label="氏名" v-on:click="onClickEdit(9)" prepend-icon="mdi-feather")
+
           .field
             v-text-field.input(
               v-model="layers[5].text"
@@ -41,24 +48,17 @@
               v-on:click="onClickEdit(5)"
               )
             qriously#qriously(:value="layers[5].text" :size="200")
-          .field
-            v-file-input(
-              v-model="uploadedFile"
-              accept="image/*"
-              show-size
-              label="会社ロゴ"
-              prepend-icon="mdi-image"
-              @change="onClickEdit(4)"
-              )
-          .columns
-            .column
-              label 色
-              button.button(
-                @click.stop="toggleColorPicker(layers[1].color)")
-                span.color-sample(:style="{ backgroundColor: Color2CSS(layers[1].color) }")
-            .column
+
+          .field.columns
+            label 色
+            button.button(
+              @click="toggleColorPicker(layers[1].color)")
+              span.color-sample(:style="{ backgroundColor: Color2CSS(layers[1].color) }")
+            .field(v-if="colorPickerActive")
               .color-picker(@click.stop)
                 Sketch(v-model="layers[1].color")
+          button.download.is-link(@click="onClickDownload")
+            span ダウンロード
 </template>
 
 <script>
@@ -286,6 +286,7 @@ export default {
             updateTimer: null,
             uploadImageUrl: '',
             url: '',
+            colorPickerActive: false,
             rules: {
               url: value => {
                 const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -341,7 +342,6 @@ export default {
         this.layers[11].type = 4
         this.layers[11].x = 1235
         this.layers[11].y = 310
-
         //矢印
         this.layers[10].type = 6
         this.layers[10].x = 1235
@@ -349,7 +349,7 @@ export default {
         //氏名
         this.layers[9].type = 3
         this.layers[9].color = { hex: '#fff' }
-        this.layers[9].text = "佐藤 達也"
+        this.layers[9].text = ""
         this.layers[9].font.size = 72
         this.layers[9].font.bold = true
         this.layers[9].font.align = "right"
@@ -358,7 +358,7 @@ export default {
         //かな
         this.layers[8].type = 3
         this.layers[8].color = { hex: '#fff' }
-        this.layers[8].text = "さとう たつや"
+        this.layers[8].text = ""
         this.layers[8].font.size = 32
         this.layers[8].font.align = "right"
         this.layers[8].x = 1540
@@ -366,14 +366,14 @@ export default {
         //会社/部署
         this.layers[7].type = 3
         this.layers[7].color = { hex: '#333' }
-        this.layers[7].text = "webインテグレーション事業部"
+        this.layers[7].text = ""
         this.layers[7].font.size = 32
         this.layers[7].x = 148
         this.layers[7].y = 286
         //肩書
         this.layers[6].type = 3
         this.layers[6].color = { hex: '#333' }
-        this.layers[6].text = "ディレクター"
+        this.layers[6].text = ""
         this.layers[6].font.size = 60
         this.layers[6].font.bold = true
         this.layers[6].x = 146
@@ -403,10 +403,14 @@ export default {
         this.updateCanvas()
     },
     methods: {
-        toggleColorPicker(obj) {
-            const b = obj.colorPicker
-            this.currentLayer.colorPicker = false
-            obj.colorPicker = !b
+        toggleColorPicker() {
+            if(this.colorPickerActive){
+              this.colorPickerActive=false
+              return
+            }else{
+              this.colorPickerActive=true
+              return
+            }
         },
         Color2CSS(color) {
             return Color2CSS(color)
