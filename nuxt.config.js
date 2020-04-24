@@ -1,7 +1,7 @@
 const TITLE = 'zooness card | バーチャル名刺背景'
 const DESCRIPTION =
     'Zoomの背景として使える名刺画像が作れます。効率的なリモートコミュニケーションを！'
-const ogimg = './img/default.png'
+const ogimg = 'https://zooness-card.work/default.png'
 module.exports = {
     mode: 'universal',
 
