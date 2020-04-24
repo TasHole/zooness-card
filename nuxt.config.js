@@ -26,7 +26,7 @@ module.exports = {
             { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             {
                 name: 'google-site-verification',
-                content: '_-HvhB5GiHtwT79ip4cX_1Ts6oSl5XeJ2fsAJhW9POc',
+                content: 'YwUrtYxyN4wo3wk6Hq9xNbQ5oJmxtsBfqOSByUdm96Q',
             },
             {
                 hid: 'description',
@@ -95,7 +95,9 @@ module.exports = {
         // '@nuxtjs/axios',
         // Doc: https://buefy.github.io/#/documentation
         // '@nuxtjs/pwa',
-        '@nuxtjs/style-resources',
+        '@nuxtjs/style-resources', ['@nuxtjs/google-analytics', {
+            id: 'UA-43025429-4'
+        }]
     ],
     styleResources: {
         scss: ['~/assets/style.scss'],
