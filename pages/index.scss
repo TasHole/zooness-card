@@ -21,6 +21,10 @@
     flex-direction: row;
 }
 
+.button {
+    display: flex;
+}
+
 .download {
     margin: auto;
     display: flex;
@@ -99,7 +103,7 @@ label {
     width: 2.5em;
     height: 2.5em;
     border: 1px solid #363633;
-    margin-left: 1em;
+    margin: 0 1em;
     display: inline-block;
     border-radius: 1.25em;
 }
@@ -118,7 +122,7 @@ input[type=number] {
     display: inline-block;
     position: absolute;
     bottom: 120px;
-    margin-left: 3vw;
+    margin-left: 1vw;
 }
 
 .field-sub {

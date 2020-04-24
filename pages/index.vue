@@ -12,7 +12,7 @@
           a(href="https://twitter.com/HRBizDev1/status/1250319945629483011" target="_blank") @HRBizDev1
           | ）のツイートから。
           br
-          | フォームに入力すると簡単に生成できます。
+          | フォームに入力すると簡単に生成できます。不要な項目は未入力でOK。
         h3 メリット
         ol
           li 名前の読み違いが起こらない
