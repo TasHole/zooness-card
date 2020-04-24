@@ -9,13 +9,7 @@
           はじめてのweb会議を少しだけスムーズに
         </h1>
         <div class="links">
-          <a
-            href="https://twiter.com/share?url=https://zooness-card.work/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <SVGElement name="twitter" class="icon__twitter" />
-          </a>
+          <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
           <a
             href="http://b.hatena.ne.jp/add?mode=confirm&url=https://zooness-card.work/&title=はじめてのweb会議を少しだけスムーズに"
