@@ -18,7 +18,7 @@
           li 名前の読み違いが起こらない
           li 相手の視野内に必要情報を盛り込める
           li 名刺交換が楽（QRコードを相手に撮ってもらうだけ）
-        .preview
+        .preview(@click="onClickDownload")
           img(:src="canvasData")
       .column
         .layer-config(v-if="currentLayer")
