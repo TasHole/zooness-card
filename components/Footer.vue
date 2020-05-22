@@ -4,7 +4,7 @@
     <p class="please">
     ＼よかったら
     <a
-      href="https://twitter.com/tembin_analyzer/"
+      href="https://twitter.com/tatt_san/"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -12,7 +12,7 @@
     </a>
     してください／
     </p>
-    <a href="https://tem-bin.com">
+    <a href="https://twitter.com/tatt_san/">
       <div>
         <SVGElement name="stayhome" class="stayhome" />
         <p>&copy; 2020 Tatsuya Sato</p>
