@@ -4,7 +4,7 @@
     <p class="please">
     ＼よかったら
     <a
-      href="https://twitter.com/tatt_san/"
+      href="https://twitter.com/WizSenpai/"
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -12,7 +12,7 @@
     </a>
     してください／
     </p>
-    <a href="https://twitter.com/tatt_san/">
+    <a href="https://twitter.com/WizSenpai/">
       <div>
         <SVGElement name="stayhome" class="stayhome" />
         <p>&copy; 2020 Tatsuya Sato</p>
